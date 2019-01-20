@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component inherit-compiler-output="true" inheritJdk="true">
+	<output-test url="file://$MODULE_DIR$/web/WEB-INF/classes/test/systemofleave"/>
+	<exclude-output/>
+	<contentEntry url="file://$MODULE_DIR$"/>
+	<lib name="Tomcat 7.0.88" scope="PROVIDED"/>
+	<levels>
+		<level name="Tomcat 7.0.88" value="application_server_libraries"/>
+		<level name="catalina-ant" value="project"/>
+		<level name="junit" value="project"/>
+		<level name="annotations-api" value="project"/>
+		<level name="aspectj-weaver" value="project"/>
+		<level name="jaspic-api" value="project"/>
+		<level name="tomcat-api" value="project"/>
+		<level name="commons-beanutils-1.7.0" value="project"/>
+		<level name="commons-collections-3.2" value="project"/>
+		<level name="ezmorph-1.0.4" value="project"/>
+	</levels>
+</component>

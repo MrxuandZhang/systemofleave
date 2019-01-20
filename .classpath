@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Tomcat 7.0.88"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/lib"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/catalina-ant"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/junit"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/annotations-api"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/aspectj-weaver"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jaspic-api"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/tomcat-api"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/commons-beanutils-1.7.0"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/commons-collections-3.2"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/ezmorph-1.0.4"/>
+	<classpathentry kind="output" path="web/WEB-INF/classes/production/systemofleave"/>
+</classpath>

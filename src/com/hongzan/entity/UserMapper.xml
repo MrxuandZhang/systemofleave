@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hongzan.dao.UserDao">
+    <cache/>
+   <resultMap id="userMap" type="User">
+       <id property="id" column="uid"/>
+       <result property="uno" column="uno"/>
+       <result property="uname" column="uname"/>
+       <result property="upwd" column="upwd"/>
+       <result property="level" column="level"/>
+       <association property="leaNo" resultMap="com.hongzan.dao.LeaveDao.leaveMap"/>
+   </resultMap>
+    <sql id="cols">uid,uno,uname,upwd,leaNo,`level`</sql>
+    <sql id="selCondition">
+        <where>
+            <if test="t!=null and t.uno!=null and t.uno!=''">
+                 uno = #{t.uno}
+            </if>
+            <if test="t!=null and t.uname!=null and t.uname!=''">
+                and uname = #{t.uname}
+            </if>
+            <if test="t!=null and t.upwd!=null and t.upwd!=''">
+                and upwd = md5(#{t.upwd})
+            </if>
+            <if test="t!=null and t.level!=null ">
+                and `level` = #{t.level}
+            </if>
+            <if test="t!=null and t.leaNo.leaNo!=null ">
+              and leaNo = #{t.leaNo.leaNo}
+            </if>
+
+        </where>
+    </sql>
+    <select id="queryLimit" resultMap="userMap">
+        SELECT * from userinfo a
+         INNER JOIN leaveinfo b on a.leaNo=b.leaNo
+        <include refid="selCondition"></include>
+        order by uid desc
+         <if test="start!=null and pageNum>0">
+             limit #{start},#{pageNum}
+         </if>
+    </select>
+    <select id="login" parameterType="User" resultMap="userMap">
+        select <include refid="cols"></include> from userinfo
+        where uno=#{uno} and upwd=md5(#{upwd})
+    </select>
+    <insert id="add" parameterType="User">
+     <if test="leaNo!=null and leaNo!=''">
+         INSERT INTO `userinfo` (`uid`, `uno`, `uname`, `upwd`, `leaNo`, `level`) VALUES (#{id}, #{uno}, #{uname}, md5(#{upwd}), #{leaNo}, #{level})
+     </if>
+      <if test="leaNo==null and leaNo==''">
+          INSERT INTO `userinfo` (`uid`, `uno`, `uname`, `upwd`,  `level`) VALUES (#{id}, #{uno}, #{uname}, md5(#{upwd}), #{level})
+      </if>
+    </insert>
+    <update id="update" parameterType="User">
+        UPDATE userinfo set uname=#{uname},upwd=md5(#{upwd}) where uid=#{id}
+    </update>
+    <select  id="getTotal" parameterType="user" resultType="int">
+        select count(*) from userinfo <include refid="selCondition"></include>
+    </select>
+    <delete id="del">
+        DELETE FROM `userinfo` WHERE (`uid`=#{id})
+    </delete>
+    <select id="getOneUser" resultMap="userMap">
+        SELECT * from userinfo where `level`=#{level} limit 0,1
+    </select>
+    <select id="get" resultMap="userMap">
+        SELECT * from userinfo where uid=#{id}
+    </select>
+    <select id="getUsers" resultMap="userMap" parameterType="String">
+        SELECT * from userinfo a where  a.`level`>0 and a.uname!=#{uname}
+    </select>
+</mapper>

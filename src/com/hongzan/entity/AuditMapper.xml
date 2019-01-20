@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hongzan.dao.AuditDao">
+    <cache/>
+<resultMap id="auditMap" type="Audit">
+  <id property="id" column="id"></id>
+  <result property="aname" column="aname"/>
+  <result property="suggest" column="suggest"/>
+  <result property="statecode" column="statecode"/>
+  <result property="atime" column="atime"/>
+  <association property="leaNo" resultMap="com.hongzan.dao.LeaveDao.leaveMap"/>
+  <association property="level" resultMap="com.hongzan.dao.UserDao.userMap"/>
+</resultMap>
+  <select id="queryLimit"  resultMap="auditMap">
+  SELECT * from  leaveinfo a INNER JOIN audit b on a.leaNo=b.leaNo
+  INNER JOIN userinfo c on c.level=b.level
+   where b.level = #{t.level.level} and a.statecode=2
+  </select>
+  <select id="getTotal" resultType="int" parameterType="Audit">
+    select count(*) from  audit
+  </select>
+  <insert id="add" parameterType="Audit">
+    INSERT INTO `audit` (`id`, `leaNo`, `aname`, `suggest`, `statecode`, `level`,`atime`) VALUES (#{id}, #{leaNo.leaNo}, #{aname}, #{suggest}, #{statecode}, #{level.level},#{atime})
+  </insert>
+  <update id="update" parameterType="Audit">
+      UPDATE audit set statecode=1,atime=#{atime} where leaNo=#{leaNo.leaNo} and statecode=2
+  </update>
+  <update id="updatemes" parameterType="Audit">
+     UPDATE audit set suggest=#{suggest},statecode=0,atime=#{atime} where leaNo=#{leaNo.leaNo} and `level`=#{level.level}
+  </update>
+  <delete id="del">
+    delete from audit where id=#{id}
+  </delete>
+  <select id="get" resultMap="auditMap">
+    select * from audit where id=#{id}
+  </select>
+  <select id="queryHistory" resultMap="auditMap" parameterType="Audit">
+    SELECT * from audit a
+    INNER JOIN leaveinfo b on a.leaNo=b.leaNo
+    INNER JOIN userinfo c on b.person=c.uname
+    where a.aname=#{aname} and a.`level`=#{level.level} and a.statecode!=2
+    <if test="currentPage!=null">
+        limit #{currentPage},5
+    </if>
+  </select>
+  <select id="queryNoAudit" resultMap="auditMap" parameterType="Audit">
+    <if test="level.level==1">
+      SELECT * from audit  a
+      INNER JOIN leaveinfo b on a.leaNo=b.leaNo
+      INNER JOIN userinfo c on c.uname=b.person
+      where a.level = #{level.level} and a.statecode=2 and b.statecode!=3
+    </if>
+    <if test="level.level!=1">
+      SELECT * from audit  a
+      INNER JOIN leaveinfo b on a.leaNo=b.leaNo
+      INNER JOIN userinfo c on c.uname=b.person
+      where a.level = #{level.level} and a.statecode=2 and b.statecode!=3
+    </if>
+  </select>
+  <select id="getLeaveHistory" resultMap="auditMap" parameterType="Audit">
+     SELECT * from audit a
+     INNER JOIN leaveinfo b on a.leaNo=b.leaNo
+     INNER JOIN userinfo c on b.person=c.uname
+     where b.leaNo=#{leaNo.leaNo}
+  </select>
+</mapper>

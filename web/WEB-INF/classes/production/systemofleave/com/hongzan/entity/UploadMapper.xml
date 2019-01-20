@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hongzan.dao.UploadDao">
+    <resultMap id="uploadMap" type="Upload">
+        <id property="uid" column="u_id"></id>
+        <result property="upath" column="path"></result>
+        <association property="leaNo" resultMap="com.hongzan.dao.LeaveDao.leaveMap"></association>
+    </resultMap>
+  <insert id="add" parameterType="Upload" useGeneratedKeys="true" keyProperty="id">
+   INSERT INTO `upload` (`path`, `leaNo`) VALUES (#{upath}, #{leaNo.leaNo})
+  </insert>
+  <update id="update" parameterType="Upload">
+      update upload set m_path=#{upath} where u_id=#{id}
+  </update>
+  <select id="queryLimit" resultMap="uploadMap">
+      select * from upload;
+  </select>
+  <select id="query" resultMap="uploadMap" parameterType="String">
+      SELECT * from leaveinfo a LEFT JOIN
+      upload b on a.leaNo=b.leaNo where b.leaNo=#{leaNo};
+  </select>
+  <delete id="del">
+      delete  from upload where u_id=#{sid}
+  </delete>
+</mapper>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hongzan.dao.LeaveDao">
+    <cache/>
+ <resultMap id="leaveMap" type="Leave">
+   <id property="id" column="id"></id>
+   <result property="begin" column="begin" />
+   <result property="end" column="end" />
+   <result property="reason" column="reasontype" />
+   <result property="leaNo" column="leaNo" />
+   <result property="reasonContent" column="reasoncontent"/>
+   <result property="stateCode" column="statecode"/>
+   <association property="person" resultMap="com.hongzan.dao.UserDao.userMap"/>
+ </resultMap>
+    <sql id="selCondition">
+       <where>
+           <if test="t!=null and t.person!=null and t.person.uname!=null and t.person.uname!=''">
+               person = #{t.person.uname}
+           </if>
+           <if test="t!=null and t.begin!=null">
+               `begin` = #{t.begin}
+           </if>
+
+       </where>
+    </sql>
+  <insert id="add" parameterType="Leave">
+      INSERT INTO `leaveinfo` (`id`, `person`, `begin`, `end`, `reasontype`, `leaNo`,`reasonContent`,`statecode`) VALUES (#{id}, #{person.uname},#{begin}, #{end}, #{reason}, #{leaNo},#{reasonContent},#{stateCode})
+  </insert>
+  <select id="queryLimit" resultMap="leaveMap" parameterType="Leave">
+      SELECT * from leaveinfo a INNER JOIN userinfo b on a.leaNo=b.leaNo
+  </select>
+   <update id="update" parameterType="Leave">
+       update leaveinfo set `begin`=#{begin},`end`=#{end}, `reasontype`=#{reason},`reasonContent`=#{reasonContent} where id=#{id}
+   </update>
+    <update id="updateCode" parameterType="Leave">
+       UPDATE `leaveinfo` SET `statecode`=#{stateCode} WHERE (`leaNo`=#{leaNo})
+    </update>
+   <delete id="del">
+       delete  from leaveinfo where id=#{id}
+   </delete>
+    <select id="getTotal" parameterType="Leave" resultType="int">
+        select count(*) from leaveinfo <include refid="selCondition"></include>
+    </select>
+    <select id="get" resultMap="leaveMap">
+      select * from leaveinfo where id=#{id}
+    </select>
+    <select id="getPerson" parameterType="Leave" resultMap="leaveMap">
+      SELECT * from leaveinfo a where a.person=#{person.uname}
+      <if test="currentPage!=null">
+          limit #{currentPage},5
+      </if>
+    </select>
+</mapper>

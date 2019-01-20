@@ -1,0 +1,16 @@
+<component name="ArtifactManager">
+  <artifact type="war" build-on-make="true" name="systemofleave:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/systemofleave_war_exploded</output-path>
+    <root id="archive" name="systemofleave_war exploded.war">
+      <element id="javaee-facet-resources" facet="systemofleave/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="systemofleave" />
+        </element>
+      </element>
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/out/artifacts/META-INF/MANIFEST.MF" />
+      </element>
+    </root>
+  </artifact>
+</component>

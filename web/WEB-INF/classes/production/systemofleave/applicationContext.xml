@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+      http://www.springframework.org/schema/context
+      http://www.springframework.org/schema/context/spring-context-4.2.xsd
+      http://www.springframework.org/schema/aop
+      http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
+      http://www.springframework.org/schema/mvc
+      http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+      http://www.springframework.org/schema/tx
+      http://www.springframework.org/schema/tx/spring-tx-4.2.xsd"
+       default-autowire="byName">
+    <context:component-scan base-package="com.hongzan"/>
+    <mvc:annotation-driven/>
+    <mvc:default-servlet-handler/>
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/demonstrationsys?useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=true"/>
+        <property name="username" value="root"/>
+        <property name="password" value="123456"/>
+        <property name="initialSize" value="15"/>
+        <property name="maxActive" value="10"/>
+        <property name="maxIdle" value="1"/>
+        <property name="maxWait" value="3000"/>
+    </bean>
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="mapperLocations">
+            <list>
+                <value>classpath:com/hongzan/entity/UserMapper.xml</value>
+                <value>classpath:com/hongzan/entity/LeaveMapper.xml</value>
+                <value>classpath:com/hongzan/entity/AuditMapper.xml</value>
+                <value>classpath:com/hongzan/entity/UploadMapper.xml</value>
+            </list>
+        </property>
+        <property name="typeAliasesPackage" value="com.hongzan.entity"/>
+    </bean>
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"/>
+    <tx:advice id="txtAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="*add*" propagation="REQUIRED"/>
+            <tx:method name="update*" propagation="REQUIRED"/>
+            <tx:method name="del*" propagation="REQUIRED"/>
+            <tx:method name="*" propagation="REQUIRED" />
+        </tx:attributes>
+    </tx:advice>
+    <aop:config>
+        <aop:pointcut id="pointcut" expression="execution( * com.hongzan.service.impl.*.*(..))"/>
+        <aop:advisor advice-ref="txtAdvice" pointcut-ref="pointcut"/>
+    </aop:config>
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.hongzan.dao"/>
+    </bean>
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="10240000"/>
+    </bean>
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basenames">
+            <list>
+                <value>i18n</value>
+            </list>
+        </property>
+    </bean>
+    <!--<mvc:interceptors>-->
+        <!--<mvc:interceptor>-->
+            <!--<mvc:mapping path="/**" />-->
+            <!--<mvc:exclude-mapping path="/**/*.css"/>-->
+            <!--<mvc:exclude-mapping path="/**/*.js"/>-->
+            <!--<mvc:exclude-mapping path="/user/login"/>-->
+            <!--<mvc:exclude-mapping path="/user/index"/>-->
+            <!--<bean class="com.hongzan.interceptor.MyInterceptor"></bean>-->
+        <!--</mvc:interceptor>-->
+    <!--</mvc:interceptors>-->
+</beans>
